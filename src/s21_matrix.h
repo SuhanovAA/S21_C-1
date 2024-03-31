@@ -1,9 +1,5 @@
-#ifndef S21_MATRIX_H
-#define S21_MATRIX_H
-
-#define OK 0
-#define ERROR 1
-#define ERROR_SIZE 2
+#ifndef S21_MATRIX_H_
+#define S21_MATRIX_H_
 
 #define SUCCESS 1
 #define FAILURE 0
@@ -13,6 +9,8 @@ typedef struct matrix_struct {
   int rows;
   int columns;
 } matrix_t;
+
+enum result_code { OK, ERROR_INCORRECT, ERROR_CALCULATION };
 
 /**
  * @brief Создает матрицу. Результат операции записывается в матрицу result.
@@ -135,4 +133,4 @@ int s21_determinant(matrix_t *A, double *result);
  */
 int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
-#endif S21_MATRIX_H  // S21_MATRIX_H
+#endif  // S21_MATRIX_H_
