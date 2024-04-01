@@ -1,6 +1,12 @@
 #ifndef S21_MATRIX_H_
 #define S21_MATRIX_H_
 
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define EPS 1E-7
+
 #define SUCCESS 1
 #define FAILURE 0
 
@@ -11,6 +17,7 @@ typedef struct matrix_struct {
 } matrix_t;
 
 enum result_code { OK, ERROR_INCORRECT, ERROR_CALCULATION };
+enum bool_alg { FALSE, TRUE };
 
 /**
  * @brief Создает матрицу. Результат операции записывается в матрицу result.
@@ -132,5 +139,32 @@ int s21_determinant(matrix_t *A, double *result);
  * @return 0 - успех, 1/2 - ошибка
  */
 int s21_inverse_matrix(matrix_t *A, matrix_t *result);
+
+/**
+ * @briefЗаполнение матрицы числами double через scanf по индексам. Для отладки.
+ * @param *dst матрица для заполнения
+ */
+void matrix_init(matrix_t *dst);
+
+/**
+ * @brief Проверка матрицы на !NULL, !rows, !columns.
+ * @param value матрица для проверки
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_matrix(matrix_t value);
+
+/**
+ * @brief Вывод индексов матрицы
+ * @param value
+ */
+void matrix_print(matrix_t value);
+
+/**
+ * @brief Проверка для s21_eq_matrix, что размеры матриц совпадают.
+ * @param value_1
+ * @param value_2
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_eq_matrix(matrix_t value_1, matrix_t value_2);
 
 #endif  // S21_MATRIX_H_
