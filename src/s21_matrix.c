@@ -1,28 +1,28 @@
 #include "s21_matrix.h"
 
-int main(void) {
-  int rows1, cols1, rows2, cols2;
-  matrix_t temp1, temp2;
+// int main(void) {
+//   int rows1, cols1, rows2, cols2;
+//   matrix_t temp1, temp2;
 
-  scanf("%d %d", &rows1, &cols1);
-  scanf("%d %d", &rows2, &cols2);
+//   scanf("%d %d", &rows1, &cols1);
+//   scanf("%d %d", &rows2, &cols2);
 
-  s21_create_matrix(rows1, cols1, &temp1);
-  s21_create_matrix(rows2, cols2, &temp2);
+//   s21_create_matrix(rows1, cols1, &temp1);
+//   s21_create_matrix(rows2, cols2, &temp2);
 
-  matrix_init(&temp1);
-  matrix_print(temp1);
+//   matrix_init(&temp1);
+//   matrix_print(temp1);
 
-  matrix_init(&temp2);
-  matrix_print(temp2);
+//   matrix_init(&temp2);
+//   matrix_print(temp2);
 
-  printf("%d", s21_eq_matrix(&temp1, &temp2));
+//   printf("%d", s21_eq_matrix(&temp1, &temp2));
 
-  s21_remove_matrix(&temp1);
-  s21_remove_matrix(&temp2);
+//   s21_remove_matrix(&temp1);
+//   s21_remove_matrix(&temp2);
 
-  return 0;
-}
+//   return 0;
+// }
 
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
   int error = OK;
