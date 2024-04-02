@@ -2,11 +2,15 @@
 
 void fill_matrix(matrix_t* dst, double min, double max) {
   double num = (min + max) / 2;
-  for (int i = 0; i < dst->rows; i++) {
-    for (int j = 0; j < dst->columns; j++) {
+  for (int i = 0; i < dst->rows; i++)
+    for (int j = 0; j < dst->columns; j++)
       dst->matrix[i][j] = num * (double)(i + j);
-    }
-  }
+}
+
+void copy_matrix(matrix_t value, matrix_t* dst) {
+  for (int i = 0; i < value.rows; i++)
+    for (int j = 0; j < value.columns; j++)
+      dst->matrix[i][j] = value.matrix[i][j];
 }
 
 void run_testcase(Suite* testcase) {
@@ -21,6 +25,10 @@ void run_testcase(Suite* testcase) {
 
 int main(void) {
   run_testcase(suite_eq_matrix());
+  run_testcase(suite_create_matrix());
+  run_testcase(suite_remove_matrix());
+  run_testcase(suite_sum_matrix());
+  run_testcase(suite_sub_matrix());
 
   return 0;
 }

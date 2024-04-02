@@ -49,23 +49,52 @@ void s21_remove_matrix(matrix_t *A) {
 }
 
 int s21_eq_matrix(matrix_t *A, matrix_t *B) {
-  int result =
-      ((check_matrix(*A) && check_matrix(*B)) && check_eq_matrix(*A, *B));
-  if (result) {
-    for (int i = 0; i < A->rows && result; i++) {
-      for (int j = 0; j < A->columns && result; j++) {
-        if (fabs(A->matrix[i][j] - B->matrix[i][j]) <= EPS) {
-          result = SUCCESS;
-        } else {
-          result = FAILURE;
+  int error = SUCCESS;
+  error =
+      ((check_matrix(*A) && check_matrix(*B)) && check_eq_size_matrix(*A, *B));
+  if (error) {
+    for (int i = 0; i < A->rows && error; i++) {
+      for (int j = 0; j < A->columns && error; j++) {
+        if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPS) {
+          error = FAILURE;
         }
       }
     }
   }
-  return result;
+  return error;
 }
-int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
-int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
+
+int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
+  int error = OK;
+  if (!(check_matrix(*A) && check_matrix(*B))) {
+    error = ERROR_INCORRECT;
+  } else if (!check_eq_size_matrix(*A, *B)) {
+    error = ERROR_CALCULATION;
+  } else {
+    s21_create_matrix(A->rows, A->columns, result);
+    for (int i = 0; i < A->rows; i++)
+      for (int j = 0; j < A->columns; j++)
+        result->matrix[i][j] = A->matrix[i][j] + B->matrix[i][j];
+  }
+
+  return error;
+}
+
+int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
+  int error = OK;
+  if (!(check_matrix(*A) && check_matrix(*B))) {
+    error = ERROR_INCORRECT;
+  } else if (!check_eq_size_matrix(*A, *B)) {
+    error = ERROR_CALCULATION;
+  } else {
+    s21_create_matrix(A->rows, A->columns, result);
+    for (int i = 0; i < A->rows; i++)
+      for (int j = 0; j < A->columns; j++)
+        result->matrix[i][j] = A->matrix[i][j] - B->matrix[i][j];
+  }
+
+  return error;
+}
 int s21_mult_number(matrix_t *A, double number, matrix_t *result);
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 int s21_transpose(matrix_t *A, matrix_t *result);
@@ -96,11 +125,25 @@ void matrix_print(matrix_t value) {
 
 int check_matrix(matrix_t value) {
   int result = TRUE;
-  if (value.matrix == NULL || !value.rows || !value.columns) result = FALSE;
+  if (value.matrix == NULL || !value.rows || !value.columns) {
+    result = FALSE;
+  } else if (!check_correct_number_matrix(value)) {
+    result = FALSE;
+  }
   return result;
 }
 
-int check_eq_matrix(matrix_t value_1, matrix_t value_2) {
+int check_correct_number_matrix(matrix_t value) {
+  int result = TRUE;
+  for (int i = 0; i < value.rows; i++)
+    for (int j = 0; j < value.columns; j++)
+      if (isinf(value.matrix[i][j]) || isnan(value.matrix[i][j]))
+        result = FALSE;
+
+  return result;
+}
+
+int check_eq_size_matrix(matrix_t value_1, matrix_t value_2) {
   int result = TRUE;
   if (value_1.rows != value_2.rows || value_1.columns != value_2.columns)
     result = FALSE;

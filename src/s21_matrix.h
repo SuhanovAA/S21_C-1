@@ -147,24 +147,33 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 void matrix_init(matrix_t *dst);
 
 /**
- * @brief Проверка матрицы на !NULL, !rows, !columns.
- * @param value матрица для проверки
- * @return 0 - ошибка, 1 - проверка пройдена
- */
-int check_matrix(matrix_t value);
-
-/**
  * @brief Вывод индексов матрицы
  * @param value
  */
 void matrix_print(matrix_t value);
 
 /**
- * @brief Проверка для s21_eq_matrix, что размеры матриц совпадают.
+ * @brief Проверка матрицы на !NULL, !rows, !columns. Проверка корректности
+ * чисел на inf и nan.
+ * @param value матрица для проверки
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_matrix(matrix_t value);
+
+/**
+ * @brief Проверка чисел матрицы на inf и nan.
+ * @param value матрица
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_correct_number_matrix(matrix_t value);
+
+/**
+ * @brief Проверка value_1.rows == value_2.rows и value_1.columns ==
+ * value_2.columns.
  * @param value_1
  * @param value_2
  * @return 0 - ошибка, 1 - проверка пройдена
  */
-int check_eq_matrix(matrix_t value_1, matrix_t value_2);
+int check_eq_size_matrix(matrix_t value_1, matrix_t value_2);
 
 #endif  // S21_MATRIX_H_
