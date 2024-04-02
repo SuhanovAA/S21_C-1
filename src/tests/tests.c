@@ -29,6 +29,8 @@ int main(void) {
   run_testcase(suite_remove_matrix());
   run_testcase(suite_sum_matrix());
   run_testcase(suite_sub_matrix());
+  run_testcase(suite_mult_number_matrix());
+  run_testcase(suite_mult_matrix());
 
   return 0;
 }

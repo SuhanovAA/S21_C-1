@@ -176,4 +176,12 @@ int check_correct_number_matrix(matrix_t value);
  */
 int check_eq_size_matrix(matrix_t value_1, matrix_t value_2);
 
+/**
+ * @brief Проверка value_1.columns == value_2.rows.
+ * @param value_1
+ * @param value_2
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_mult_size_matrix(matrix_t value_1, matrix_t value_2);
+
 #endif  // S21_MATRIX_H_

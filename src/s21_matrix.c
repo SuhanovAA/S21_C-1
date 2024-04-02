@@ -95,24 +95,61 @@ int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
 
   return error;
 }
-int s21_mult_number(matrix_t *A, double number, matrix_t *result);
-int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
+
+int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
+  int error = OK;
+  if (!check_matrix(*A)) {
+    error = ERROR_INCORRECT;
+  } else if (isnan(number) || isinf(number)) {
+    error = ERROR_INCORRECT;
+  } else {
+    s21_create_matrix(A->rows, A->columns, result);
+    for (int i = 0; i < A->rows; i++)
+      for (int j = 0; j < A->columns; j++)
+        result->matrix[i][j] = A->matrix[i][j] * number;
+  }
+
+  return error;
+}
+
+int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
+  int error = OK;
+  if (!(check_matrix(*A) && check_matrix(*B))) {
+    error = ERROR_INCORRECT;
+  } else if (!check_mult_size_matrix(*A, *B)) {
+    error = ERROR_CALCULATION;
+  } else {
+    double num = 0.0;
+    s21_create_matrix(A->rows, B->columns, result);
+    for (int i = 0; i < A->rows; i++) {
+      for (int j = 0; j < B->columns; j++) {
+        for (int k = 0; k < A->columns; k++) {
+          num += A->matrix[i][k] * B->matrix[k][j];
+        }
+        result->matrix[i][j] = num;
+        num = 0.0;
+      }
+    }
+  }
+
+  return error;
+}
 int s21_transpose(matrix_t *A, matrix_t *result);
 int s21_calc_complements(matrix_t *A, matrix_t *result);
 int s21_determinant(matrix_t *A, double *result);
 int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
-void matrix_init(matrix_t *dst) {
-  double num;
-  for (int i = 0; i < dst->rows; i++) {
-    for (int j = 0; j < dst->columns; j++) {
-      printf("A[%d][%d] = ", i, j);
-      scanf("%lf", &num);
-      dst->matrix[i][j] = num;
-      printf("\n");
-    }
-  }
-}
+// void matrix_init(matrix_t *dst) {
+//   double num;
+//   for (int i = 0; i < dst->rows; i++) {
+//     for (int j = 0; j < dst->columns; j++) {
+//       printf("A[%d][%d] = ", i, j);
+//       scanf("%lf", &num);
+//       dst->matrix[i][j] = num;
+//       printf("\n");
+//     }
+//   }
+// }
 
 void matrix_print(matrix_t value) {
   for (int i = 0; i < value.rows; i++) {
@@ -147,5 +184,11 @@ int check_eq_size_matrix(matrix_t value_1, matrix_t value_2) {
   int result = TRUE;
   if (value_1.rows != value_2.rows || value_1.columns != value_2.columns)
     result = FALSE;
+  return result;
+}
+
+int check_mult_size_matrix(matrix_t value_1, matrix_t value_2) {
+  int result = TRUE;
+  if (value_1.columns != value_2.rows) result = FALSE;
   return result;
 }

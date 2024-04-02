@@ -10,6 +10,8 @@ Suite* suite_create_matrix(void);
 Suite* suite_remove_matrix(void);
 Suite* suite_sum_matrix(void);
 Suite* suite_sub_matrix(void);
+Suite* suite_mult_number_matrix(void);
+Suite* suite_mult_matrix(void);
 
 /**
  * @brief Заполнение матрицы double числами по строкам и столбцам матрицы. На
