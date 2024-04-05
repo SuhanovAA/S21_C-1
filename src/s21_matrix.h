@@ -184,4 +184,20 @@ int check_eq_size_matrix(matrix_t value_1, matrix_t value_2);
  */
 int check_mult_size_matrix(matrix_t value_1, matrix_t value_2);
 
+/**
+ * @brief Проверка того, что матрица КВАДРАТНАЯ.
+ * @param value
+ * @return 0 - ошибка, 1 - проверка пройдена
+ */
+int check_square_matrix(matrix_t value);
+
+/**
+ * @brief Взятие минора из матрицы по номеру строки и столбца.
+ * @param row № строки минора
+ * @param column № колонки минора
+ * @param A начальная матрица
+ * @param *minor матрица миноров из А по row и column
+ */
+void get_minor(int row, int column, matrix_t A, matrix_t *minor);
+
 #endif  // S21_MATRIX_H_

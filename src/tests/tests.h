@@ -13,6 +13,7 @@ Suite* suite_sub_matrix(void);
 Suite* suite_mult_number_matrix(void);
 Suite* suite_mult_matrix(void);
 Suite* suite_transpose_matrix(void);
+Suite* suite_determinant_matrix(void);
 
 /**
  * @brief Заполнение матрицы double числами по строкам и столбцам матрицы. На

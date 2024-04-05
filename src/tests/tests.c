@@ -32,6 +32,7 @@ int main(void) {
   run_testcase(suite_mult_number_matrix());
   run_testcase(suite_mult_matrix());
   run_testcase(suite_transpose_matrix());
+  run_testcase(suite_determinant_matrix());
 
   return 0;
 }
