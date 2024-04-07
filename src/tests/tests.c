@@ -7,12 +7,6 @@ void fill_matrix(matrix_t* dst, double min, double max) {
       dst->matrix[i][j] = num * (double)(i + j);
 }
 
-void copy_matrix(matrix_t value, matrix_t* dst) {
-  for (int i = 0; i < value.rows; i++)
-    for (int j = 0; j < value.columns; j++)
-      dst->matrix[i][j] = value.matrix[i][j];
-}
-
 void run_testcase(Suite* testcase) {
   printf("\n");
   SRunner* sr = srunner_create(testcase);
@@ -32,7 +26,9 @@ int main(void) {
   run_testcase(suite_mult_number_matrix());
   run_testcase(suite_mult_matrix());
   run_testcase(suite_transpose_matrix());
+  run_testcase(suite_calc_comp_matrix());
   run_testcase(suite_determinant_matrix());
+  run_testcase(suite_inverse_matrix());
 
   return 0;
 }

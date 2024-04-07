@@ -30,7 +30,6 @@ $(FILE).a: o_files
 test: clang $(FILE).a
 	$(CC) $(FILETEST).c $(FILE).a -o $(FILETESTO) $(TESTFLAGS)
 	./$(FILETESTO)
-	make clean
 
 gcov_report: $(FILE).a
 	$(CC) $(COVFLAG) $(FILETEST).c *.c -o $(FILEREPORT) $(TESTFLAGS)
@@ -47,22 +46,29 @@ clean:
 
 #style
 cpp:
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c *.h
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c *.h tests/*.c tests/*.h
 
 clang:
 	clang-format -style=Google -i *.c *.h tests/*.c tests/*.h
 
 check: cpp clang
 
-#install for OS
-install_Linux:
-	sudo apt install check
-	sudo apt install lcov
-	sudo apt install gcovr
-	sudo apt install libcppunit-subunit-dev
-	sudo apt install pkg-config
+leaks: test
+	leaks -atExit -- ./s21_test
 
+#install for OS
 install_macOS:
 	brew install gcc
 	brew install lcov
 	brew install pkg-config
+
+brsw:
+	eval /opt/goinfre/$(USERNAME)/homebrew/bin/brew shellenv; \
+	brew update --force --quiet; \
+	chmod -R go-w "$(brew --prefix)/share/zsh"
+
+install_brew:
+	cd /opt/goinfre/$(USERNAME); \
+	mkdir homebrew; \
+	git clone https://github.com/Homebrew/brew homebrew; \
+	make brsw

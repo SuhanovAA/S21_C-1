@@ -55,12 +55,12 @@ Suite* suite_eq_matrix(void) {
   Suite* s = suite_create("\033[42m-=S21_EQ_MATRIX=-\033[0m");
   TCase* tc = tcase_create("case_eq_matrix");
 
-  tcase_add_test(tc, eq_matrix_test_0);  // SUCCESS
-  tcase_add_test(tc, eq_matrix_test_1);  // FAILURE
-  tcase_add_test(tc, eq_matrix_test_2);  // FAILURE
-  tcase_add_test(tc, eq_matrix_test_3);  // SUCCESS
-  tcase_add_test(tc, eq_matrix_test_4);  // FAILURE
-  tcase_add_test(tc, eq_matrix_test_5);  // FAILURE
+  tcase_add_test(tc, eq_matrix_test_0);
+  tcase_add_test(tc, eq_matrix_test_1);
+  tcase_add_test(tc, eq_matrix_test_2);
+  tcase_add_test(tc, eq_matrix_test_3);
+  tcase_add_test(tc, eq_matrix_test_4);
+  tcase_add_test(tc, eq_matrix_test_5);
 
   suite_add_tcase(s, tc);
   return s;

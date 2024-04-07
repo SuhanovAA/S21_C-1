@@ -84,11 +84,11 @@ Suite* suite_mult_matrix(void) {
   Suite* s = suite_create("\033[42m-=S21_MULT_MATRIX=-\033[0m");
   TCase* tc = tcase_create("case_mult_matrix");
 
-  tcase_add_test(tc, mult_matrix_test_error_0);  // ERROR_CALCULATION
-  tcase_add_test(tc, mult_matrix_test_error_1);  // ERROR_INCORRECT
-  tcase_add_test(tc, mult_matrix_test_0);        // OK
-  tcase_add_test(tc, mult_matrix_test_1);        // OK
-  tcase_add_test(tc, mult_matrix_test_2);        // OK
+  tcase_add_test(tc, mult_matrix_test_error_0);
+  tcase_add_test(tc, mult_matrix_test_error_1);
+  tcase_add_test(tc, mult_matrix_test_0);
+  tcase_add_test(tc, mult_matrix_test_1);
+  tcase_add_test(tc, mult_matrix_test_2);
 
   suite_add_tcase(s, tc);
   return s;

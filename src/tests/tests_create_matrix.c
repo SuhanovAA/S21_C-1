@@ -46,12 +46,12 @@ Suite* suite_create_matrix(void) {
   Suite* s = suite_create("\033[42m-=S21_CREATE_MATRIX=-\033[0m");
   TCase* tc = tcase_create("case_create_matrix");
 
-  tcase_add_test(tc, create_matrix_test_0);  // OK
-  tcase_add_test(tc, create_matrix_test_1);  // ERROR_INCORRECT
-  tcase_add_test(tc, create_matrix_test_2);  // ERROR_INCORRECT
-  tcase_add_test(tc, create_matrix_test_3);  // ERROR_INCORRECT
-  tcase_add_test(tc, create_matrix_test_4);  // ERROR_INCORRECT
-  tcase_add_test(tc, create_matrix_test_5);  // ERROR_INCORRECT
+  tcase_add_test(tc, create_matrix_test_0);
+  tcase_add_test(tc, create_matrix_test_1);
+  tcase_add_test(tc, create_matrix_test_2);
+  tcase_add_test(tc, create_matrix_test_3);
+  tcase_add_test(tc, create_matrix_test_4);
+  tcase_add_test(tc, create_matrix_test_5);
 
   suite_add_tcase(s, tc);
   return s;

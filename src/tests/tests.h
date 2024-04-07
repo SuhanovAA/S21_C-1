@@ -13,7 +13,9 @@ Suite* suite_sub_matrix(void);
 Suite* suite_mult_number_matrix(void);
 Suite* suite_mult_matrix(void);
 Suite* suite_transpose_matrix(void);
+Suite* suite_calc_comp_matrix(void);
 Suite* suite_determinant_matrix(void);
+Suite* suite_inverse_matrix(void);
 
 /**
  * @brief Заполнение матрицы double числами по строкам и столбцам матрицы. На
@@ -24,13 +26,6 @@ Suite* suite_determinant_matrix(void);
  * @param max максимальная граница для формулы
  */
 void fill_matrix(matrix_t* dst, double min, double max);
-
-/**
- * @brief Копирование матрицы value в *dst.
- * @param value оригинал
- * @param *dst копия
- */
-void copy_matrix(matrix_t value, matrix_t* dst);
 
 void run_testcase(Suite* testcase);
 

@@ -30,8 +30,8 @@ Suite* suite_transpose_matrix(void) {
   Suite* s = suite_create("\033[42m-=S21_TRANSPOSE_MATRIX=-\033[0m");
   TCase* tc = tcase_create("case_transpose_matrix");
 
-  tcase_add_test(tc, transpose_matrix_test_error_0);  // ERROR_INCORRECT
-  tcase_add_test(tc, transpose_matrix_test_0);        // OK
+  tcase_add_test(tc, transpose_matrix_test_error_0);
+  tcase_add_test(tc, transpose_matrix_test_0);
 
   suite_add_tcase(s, tc);
   return s;

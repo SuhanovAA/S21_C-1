@@ -31,7 +31,6 @@ int s21_create_matrix(int rows, int columns, matrix_t *result);
 /**
  * @brief Удаляет матрицу
  * @param A - указатель на матрицу
- * @return 0 - успех, 1/2 - ошибка
  */
 void s21_remove_matrix(matrix_t *A);
 

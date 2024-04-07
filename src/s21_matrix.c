@@ -1,24 +1,5 @@
 #include "s21_matrix.h"
 
-// int main(void) {
-//   int rows1, cols1;
-//   matrix_t temp1;
-//   double result = 0.0;
-
-//   scanf("%d %d", &rows1, &cols1);
-
-//   s21_create_matrix(rows1, cols1, &temp1);
-
-//   matrix_init(&temp1);
-//   matrix_print(temp1);
-//   s21_determinant(&temp1, &result);
-//   printf("(((([  %f  ]))))\n", result);
-
-//   s21_remove_matrix(&temp1);
-
-//   return 0;
-// }
-
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
   int error = OK;
   if (rows <= 0 || columns <= 0) {
@@ -47,7 +28,7 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
   int error = SUCCESS;
   error =
       ((check_matrix(*A) && check_matrix(*B)) && check_eq_size_matrix(*A, *B));
-  if (error) {
+  if (error == SUCCESS) {
     for (int i = 0; i < A->rows && error; i++) {
       for (int j = 0; j < A->columns && error; j++) {
         if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPS) {
@@ -147,7 +128,7 @@ int s21_transpose(matrix_t *A, matrix_t *result) {
 
 int s21_calc_complements(matrix_t *A, matrix_t *result) {
   int error = OK;
-  if (check_matrix(*A) == FALSE) {
+  if (check_matrix(*A) == FALSE || result == NULL) {
     error = ERROR_INCORRECT;
   } else if (check_square_matrix(*A) == FALSE) {
     error = ERROR_CALCULATION;
@@ -158,9 +139,8 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
         result->matrix[0][0] = A->matrix[0][0];
       } else {
         double det_minor = 0.0;
-        int sign = 0;
-        for (int i = 0; i < A->rows; i++) {
-          for (int j = 0; j < A->columns; j++) {
+        for (int i = 0; i < A->rows && error == OK; i++) {
+          for (int j = 0; j < A->columns && error == OK; j++) {
             matrix_t minor;
             s21_create_matrix(A->rows - 1, A->rows - 1, &minor);
             if (check_matrix(minor) == FALSE) {
@@ -169,8 +149,7 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
               get_minor(i, j, *A, &minor);
               error = s21_determinant(&minor, &det_minor);
               if (error == OK) {
-                sign = (i + j) % 2 == 0 ? 1 : -1;  //-1^(i+j)
-                result->matrix[i][j] = det_minor * sign;
+                result->matrix[i][j] = det_minor * ((i + j) % 2 == 0 ? 1 : -1);
               }
               s21_remove_matrix(&minor);
               det_minor = 0.0;
@@ -196,7 +175,6 @@ int s21_determinant(matrix_t *A, double *result) {
       *result =
           A->matrix[0][0] * A->matrix[1][1] - A->matrix[0][1] * A->matrix[1][0];
     } else {
-      int sign = 0;
       double det_minor = 0.0;
       for (int i = 0; i < A->columns && error == OK; i++) {
         matrix_t minor;
@@ -208,8 +186,7 @@ int s21_determinant(matrix_t *A, double *result) {
           } else {
             error = s21_determinant(&minor, &det_minor);
             if (error == OK) {
-              sign = i % 2 == 0 ? 1 : -1;
-              *result += A->matrix[0][i] * det_minor * sign;
+              *result += A->matrix[0][i] * det_minor * (i % 2 == 0 ? 1 : -1);
             }
             s21_remove_matrix(&minor);
             det_minor = 0.0;
@@ -221,27 +198,34 @@ int s21_determinant(matrix_t *A, double *result) {
 
   return error;
 }
-int s21_inverse_matrix(matrix_t *A, matrix_t *result);
+int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
+  int error = OK;
+  double det = 0.;
+  error = s21_determinant(A, &det);
+  if (error == OK && result != NULL) {
+    if (det != 0) {
+      if (A->rows == 1) {
+        error = s21_create_matrix(1, 1, result);
+        if (error == OK) result->matrix[0][0] = 1 / A->matrix[0][0];
+      } else {
+        matrix_t minor_inverse;
+        error = s21_calc_complements(A, &minor_inverse);
+        if (error == OK) {
+          matrix_t minor_inverse_t;
+          error = s21_transpose(&minor_inverse, &minor_inverse_t);
+          if (error == OK) {
+            error = s21_mult_number(&minor_inverse_t, 1 / det, result);
+          }
+          s21_remove_matrix(&minor_inverse_t);
+        }
+        s21_remove_matrix(&minor_inverse);
+      }
 
-void matrix_init(matrix_t *dst) {
-  double num;
-  for (int i = 0; i < dst->rows; i++) {
-    for (int j = 0; j < dst->columns; j++) {
-      printf("A[%d][%d] = ", i, j);
-      scanf("%lf", &num);
-      dst->matrix[i][j] = num;
+    } else {
+      error = ERROR_CALCULATION;  // det == 0
     }
-    printf("\n");
   }
-}
-
-void matrix_print(matrix_t value) {
-  for (int i = 0; i < value.rows; i++) {
-    for (int j = 0; j < value.columns; j++) {
-      printf("%.7lf ", value.matrix[i][j]);
-    }
-    printf("\n");
-  }
+  return error;
 }
 
 int check_matrix(matrix_t value) {
