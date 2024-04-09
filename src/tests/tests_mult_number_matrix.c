@@ -6,7 +6,7 @@ START_TEST(mult_number_matrix_test_error_0) {
   s21_create_matrix(2, 2, &A);
   fill_matrix(&A, 0, 1);
 
-  ck_assert_int_eq(s21_mult_number(&A, number, &result), ERROR_INCORRECT);
+  ck_assert_int_eq(s21_mult_number(&A, number, &result), ERROR_CALCULATION);
   s21_remove_matrix(&A);
 }
 END_TEST

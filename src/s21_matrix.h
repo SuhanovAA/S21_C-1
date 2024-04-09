@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define EPS 1E-7
+#define EPS 1e-7
 
 #define SUCCESS 1
 #define FAILURE 0
@@ -17,7 +17,6 @@ typedef struct matrix_struct {
 } matrix_t;
 
 enum result_code { OK, ERROR_INCORRECT, ERROR_CALCULATION };
-enum bool_alg { FALSE, TRUE };
 
 /**
  * @brief Создает матрицу. Результат операции записывается в матрицу result.
@@ -152,26 +151,25 @@ void matrix_init(matrix_t *dst);
 void matrix_print(matrix_t value);
 
 /**
- * @brief Проверка матрицы на !NULL, !rows, !columns. Проверка корректности
- * чисел на inf и nan.
- * @param value матрица для проверки
- * @return 0 - ошибка, 1 - проверка пройдена
+ * @brief Проверка матрицы на NULL, rows <= 0, columns <= 0.
+ * @param mtx
+ * @return 0 - OK, 1 - ERROR_INCORRECT
  */
-int check_matrix(matrix_t value);
+int check_matrix(matrix_t mtx);
 
 /**
  * @brief Проверка чисел матрицы на inf и nan.
- * @param value матрица
- * @return 0 - ошибка, 1 - проверка пройдена
+ * @param mtx
+ * @return 0 - OK, 2 - ERROR_CALCULATION
  */
-int check_correct_number_matrix(matrix_t value);
+int check_numb_mtx(matrix_t mtx);
 
 /**
  * @brief Проверка value_1.rows == value_2.rows и value_1.columns ==
  * value_2.columns.
  * @param value_1
  * @param value_2
- * @return 0 - ошибка, 1 - проверка пройдена
+ * @return 0 - OK, 2 - ERROR_CALCULATION
  */
 int check_eq_size_matrix(matrix_t value_1, matrix_t value_2);
 
@@ -179,14 +177,14 @@ int check_eq_size_matrix(matrix_t value_1, matrix_t value_2);
  * @brief Проверка value_1.columns == value_2.rows.
  * @param value_1
  * @param value_2
- * @return 0 - ошибка, 1 - проверка пройдена
+ * @return 0 - OK, 1 - ERROR_INCORRECT
  */
 int check_mult_size_matrix(matrix_t value_1, matrix_t value_2);
 
 /**
- * @brief Проверка того, что матрица КВАДРАТНАЯ.
+ * @brief Проверка того, что матрица квадртная.
  * @param value
- * @return 0 - ошибка, 1 - проверка пройдена
+ * @return 0 - OK, 2 - ERROR_CALCULATION
  */
 int check_square_matrix(matrix_t value);
 

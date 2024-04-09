@@ -11,7 +11,7 @@ COVFLAG=-fprofile-arcs -ftest-coverage
 OS = $(shell uname)
 
 ifeq ($(OS), Darwin)
-	TESTFLAGS=-pthread -lm -lcheck
+	TESTFLAGS=-pthread -lm -lcheck 
 	OPEN_CMD=open
 else
 	TESTFLAGS=-pthread -lcheck_pic -lrt -lm -lsubunit
@@ -34,9 +34,9 @@ test: clang $(FILE).a
 gcov_report: $(FILE).a
 	$(CC) $(COVFLAG) $(FILETEST).c *.c -o $(FILEREPORT) $(TESTFLAGS)
 	./$(FILEREPORT)
-	lcov -t "$(FILE)" -o test.info -c -d .  
+	lcov -t "$(FILE)" -o test.info -c -d .  --no-external
 	genhtml -o $(DIRREPORT) test.info
-	$(OPEN_CMD) $(DIRREPORT)/index.html
+	$(OPEN_CMD) $(DIRREPORT)/index.html 
 
 rep: gcov_report
 
@@ -45,11 +45,20 @@ clean:
 	make clang
 
 #style
+
+check_docker:
+	sh ../materials/build/run.sh
+
 cpp:
 	cppcheck --enable=all --suppress=missingIncludeSystem *.c *.h tests/*.c tests/*.h
 
 clang:
 	clang-format -style=Google -i *.c *.h tests/*.c tests/*.h
+
+clang_s21:
+	cp ../materials/linters/.clang-format .clang-format
+	clang-format -style=file -i *.c *.h tests/*.c tests/*.h
+	rm -rf .clang-format
 
 check: cpp clang
 

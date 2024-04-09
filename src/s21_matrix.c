@@ -2,21 +2,37 @@
 
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
   int error = OK;
-  if (rows <= 0 || columns <= 0) {
+  if (!result || rows <= 0 || columns <= 0) {
     error = ERROR_INCORRECT;
   } else {
     result->columns = columns;
     result->rows = rows;
     result->matrix = (double **)malloc(rows * sizeof(double *));
-    for (int i = 0; i < rows; i++)
-      result->matrix[i] = (double *)malloc(columns * sizeof(double));
+    if (!result->matrix) {
+      error = ERROR_CALCULATION;
+    } else {
+      int tmp = 0;  // border matrix
+      for (int i = 0; i < rows && error == OK; i++, tmp++) {
+        result->matrix[i] = (double *)malloc(columns * sizeof(double));
+        if (!result->matrix[i]) {
+          error = ERROR_CALCULATION;
+        }
+      }
+      if (error != OK) {
+        for (int i = 0; i < tmp; i++) {
+          free(result->matrix[i]);
+        }
+        free(result->matrix);
+      }
+    }
   }
   return error;
 }
 
 void s21_remove_matrix(matrix_t *A) {
-  if (A->matrix != NULL && A->rows > 0 && A->columns > 0) {
-    for (int i = 0; i < A->rows; i++) free(A->matrix[i]);
+  if (check_matrix(*A) == OK) {
+    for (int i = 0; i < A->rows; i++)
+      if (A->matrix[i] != NULL) free(A->matrix[i]);
     free(A->matrix);
     A->matrix = NULL;
     A->rows = 0;
@@ -26,11 +42,12 @@ void s21_remove_matrix(matrix_t *A) {
 
 int s21_eq_matrix(matrix_t *A, matrix_t *B) {
   int error = SUCCESS;
-  error =
-      ((check_matrix(*A) && check_matrix(*B)) && check_eq_size_matrix(*A, *B));
+  if (check_matrix(*A) || check_matrix(*B) || check_eq_size_matrix(*A, *B)) {
+    error = FAILURE;
+  }
   if (error == SUCCESS) {
-    for (int i = 0; i < A->rows && error; i++) {
-      for (int j = 0; j < A->columns && error; j++) {
+    for (int i = 0; i < A->rows && error == SUCCESS; i++) {
+      for (int j = 0; j < A->columns && error == SUCCESS; j++) {
         if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPS) {
           error = FAILURE;
         }
@@ -41,69 +58,86 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
 }
 
 int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-  int error = OK;
-  if (!(check_matrix(*A) && check_matrix(*B))) {
-    error = ERROR_INCORRECT;
-  } else if (!check_eq_size_matrix(*A, *B)) {
-    error = ERROR_CALCULATION;
-  } else {
-    s21_create_matrix(A->rows, A->columns, result);
-    for (int i = 0; i < A->rows; i++)
-      for (int j = 0; j < A->columns; j++)
-        result->matrix[i][j] = A->matrix[i][j] + B->matrix[i][j];
+  int error = (check_matrix(*A) && check_matrix(*B));
+  if (error == OK) {
+    if (check_eq_size_matrix(*A, *B) || check_numb_mtx(*A) ||
+        check_numb_mtx(*B)) {
+      error = ERROR_CALCULATION;
+    }
+  }
+  if (error == OK) {
+    error = s21_create_matrix(A->rows, A->columns, result);
+    if (error == OK) {
+      for (int i = 0; i < A->rows; i++)
+        for (int j = 0; j < A->columns; j++)
+          result->matrix[i][j] = A->matrix[i][j] + B->matrix[i][j];
+    }
   }
 
   return error;
 }
 
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-  int error = OK;
-  if (!(check_matrix(*A) && check_matrix(*B))) {
-    error = ERROR_INCORRECT;
-  } else if (!check_eq_size_matrix(*A, *B)) {
-    error = ERROR_CALCULATION;
-  } else {
-    s21_create_matrix(A->rows, A->columns, result);
-    for (int i = 0; i < A->rows; i++)
-      for (int j = 0; j < A->columns; j++)
-        result->matrix[i][j] = A->matrix[i][j] - B->matrix[i][j];
+  int error = (check_matrix(*A) || check_matrix(*B));
+  if (error == OK) {
+    if (check_eq_size_matrix(*A, *B) || check_numb_mtx(*A) ||
+        check_numb_mtx(*B))
+      error = ERROR_CALCULATION;
+  }
+  if (error == OK) {
+    error = s21_create_matrix(A->rows, A->columns, result);
+    if (error == OK) {
+      for (int i = 0; i < A->rows; i++)
+        for (int j = 0; j < A->columns; j++)
+          result->matrix[i][j] = A->matrix[i][j] - B->matrix[i][j];
+    }
   }
 
   return error;
 }
 
 int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
-  int error = OK;
-  if (!check_matrix(*A)) {
-    error = ERROR_INCORRECT;
-  } else if (isnan(number) || isinf(number)) {
-    error = ERROR_INCORRECT;
-  } else {
-    s21_create_matrix(A->rows, A->columns, result);
-    for (int i = 0; i < A->rows; i++)
-      for (int j = 0; j < A->columns; j++)
-        result->matrix[i][j] = A->matrix[i][j] * number;
+  int error = check_matrix(*A);
+  if (error == OK) {
+    if (result == NULL) {
+      error = ERROR_INCORRECT;
+    }
+  }
+  if (error == OK) {
+    if (check_numb_mtx(*A) || isnan(number) || isinf(number)) {
+      error = ERROR_CALCULATION;
+    }
+    if (error == OK) {
+      error = s21_create_matrix(A->rows, A->columns, result);
+      if (error == OK) {
+        for (int i = 0; i < A->rows; i++)
+          for (int j = 0; j < A->columns; j++)
+            result->matrix[i][j] = A->matrix[i][j] * number;
+      }
+    }
   }
 
   return error;
 }
 
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-  int error = OK;
-  if (!(check_matrix(*A) && check_matrix(*B))) {
-    error = ERROR_INCORRECT;
-  } else if (!check_mult_size_matrix(*A, *B)) {
-    error = ERROR_CALCULATION;
-  } else {
-    double num = 0.0;
-    s21_create_matrix(A->rows, B->columns, result);
-    for (int i = 0; i < A->rows; i++) {
-      for (int j = 0; j < B->columns; j++) {
-        for (int k = 0; k < A->columns; k++) {
-          num += A->matrix[i][k] * B->matrix[k][j];
+  int error = (check_matrix(*A) || check_matrix(*B) || result == NULL);
+  if (error == OK) {
+    if (A->columns != B->rows) {
+      error = ERROR_CALCULATION;
+    } else {
+      double num = 0.0;
+      error = s21_create_matrix(A->rows, B->columns, result);
+      if (error == OK) {
+        for (int i = 0; i < A->rows; i++) {
+          for (int j = 0; j < B->columns; j++) {
+            for (int k = 0; k < A->columns; k++) {
+              num += A->matrix[i][k] * B->matrix[k][j];
+            }
+            result->matrix[i][j] = num;
+            num = 0.0;
+          }
         }
-        result->matrix[i][j] = num;
-        num = 0.0;
       }
     }
   }
@@ -128,9 +162,9 @@ int s21_transpose(matrix_t *A, matrix_t *result) {
 
 int s21_calc_complements(matrix_t *A, matrix_t *result) {
   int error = OK;
-  if (check_matrix(*A) == FALSE || result == NULL) {
+  if (check_matrix(*A) == ERROR_INCORRECT || result == NULL) {
     error = ERROR_INCORRECT;
-  } else if (check_square_matrix(*A) == FALSE) {
+  } else if (check_square_matrix(*A) == ERROR_CALCULATION) {
     error = ERROR_CALCULATION;
   } else {
     error = s21_create_matrix(A->rows, A->rows, result);
@@ -143,9 +177,8 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
           for (int j = 0; j < A->columns && error == OK; j++) {
             matrix_t minor;
             s21_create_matrix(A->rows - 1, A->rows - 1, &minor);
-            if (check_matrix(minor) == FALSE) {
-              error = ERROR_INCORRECT;
-            } else {
+            error = check_matrix(minor);
+            if (error == OK) {
               get_minor(i, j, *A, &minor);
               error = s21_determinant(&minor, &det_minor);
               if (error == OK) {
@@ -163,12 +196,9 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
   return error;
 }
 int s21_determinant(matrix_t *A, double *result) {
-  int error = OK;
-  if (check_matrix(*A) == FALSE) {
-    error = ERROR_INCORRECT;
-  } else if (check_square_matrix(*A) == FALSE) {
-    error = ERROR_CALCULATION;
-  } else {
+  int error = (check_matrix(*A) || check_square_matrix(*A));
+  if (error == OK) error = check_numb_mtx(*A);
+  if (error == OK) {
     if (A->rows == 1) {
       *result = A->matrix[0][0];
     } else if (A->rows == 2) {
@@ -181,9 +211,8 @@ int s21_determinant(matrix_t *A, double *result) {
         error = s21_create_matrix(A->rows - 1, A->columns - 1, &minor);
         if (error == OK) {
           get_minor(0, i, *A, &minor);
-          if (check_matrix(minor) == FALSE) {
-            error = ERROR_INCORRECT;
-          } else {
+          error = check_matrix(minor);
+          if (error == OK) {
             error = s21_determinant(&minor, &det_minor);
             if (error == OK) {
               *result += A->matrix[0][i] * det_minor * (i % 2 == 0 ? 1 : -1);
@@ -198,6 +227,7 @@ int s21_determinant(matrix_t *A, double *result) {
 
   return error;
 }
+
 int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
   int error = OK;
   double det = 0.;
@@ -228,42 +258,39 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
   return error;
 }
 
-int check_matrix(matrix_t value) {
-  int result = TRUE;
-  if (value.matrix == NULL || !value.rows || !value.columns) {
-    result = FALSE;
-  } else if (!check_correct_number_matrix(value)) {
-    result = FALSE;
+int check_matrix(matrix_t mtx) {
+  int result = OK;
+  if (mtx.matrix == NULL || mtx.rows <= 0 || mtx.columns <= 0) {
+    result = ERROR_INCORRECT;
   }
   return result;
 }
 
-int check_correct_number_matrix(matrix_t value) {
-  int result = TRUE;
-  for (int i = 0; i < value.rows; i++)
-    for (int j = 0; j < value.columns; j++)
-      if (isinf(value.matrix[i][j]) || isnan(value.matrix[i][j]))
-        result = FALSE;
-
+int check_numb_mtx(matrix_t mtx) {
+  int result = OK;
+  for (int i = 0; i < mtx.rows; i++)
+    for (int j = 0; j < mtx.columns; j++)
+      if (isinf(mtx.matrix[i][j]) || isnan(mtx.matrix[i][j]))
+        result = ERROR_CALCULATION;
   return result;
 }
 
 int check_eq_size_matrix(matrix_t value_1, matrix_t value_2) {
-  int result = TRUE;
+  int result = OK;
   if (value_1.rows != value_2.rows || value_1.columns != value_2.columns)
-    result = FALSE;
+    result = ERROR_CALCULATION;
   return result;
 }
 
 int check_mult_size_matrix(matrix_t value_1, matrix_t value_2) {
-  int result = TRUE;
-  if (value_1.columns != value_2.rows) result = FALSE;
+  int result = OK;
+  if (value_1.columns != value_2.rows) result = ERROR_CALCULATION;
   return result;
 }
 
 int check_square_matrix(matrix_t value) {
-  int result = TRUE;
-  if (value.rows != value.columns) result = FALSE;
+  int result = OK;
+  if (value.rows != value.columns) result = ERROR_CALCULATION;
   return result;
 }
 
