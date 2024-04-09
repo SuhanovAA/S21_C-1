@@ -146,7 +146,7 @@ int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
 }
 int s21_transpose(matrix_t *A, matrix_t *result) {
   int error = OK;
-  error = !check_matrix(*A);
+  error = (check_matrix(*A) || result == NULL);
   if (error == OK) {
     error = s21_create_matrix(A->columns, A->rows, result);
     if (error == OK) {
@@ -162,9 +162,9 @@ int s21_transpose(matrix_t *A, matrix_t *result) {
 
 int s21_calc_complements(matrix_t *A, matrix_t *result) {
   int error = OK;
-  if (check_matrix(*A) == ERROR_INCORRECT || result == NULL) {
+  if (check_matrix(*A) != OK || result == NULL) {
     error = ERROR_INCORRECT;
-  } else if (check_square_matrix(*A) == ERROR_CALCULATION) {
+  } else if (check_square_matrix(*A) != OK || check_numb_mtx(*A) != OK) {
     error = ERROR_CALCULATION;
   } else {
     error = s21_create_matrix(A->rows, A->rows, result);
@@ -196,8 +196,13 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
   return error;
 }
 int s21_determinant(matrix_t *A, double *result) {
-  int error = (check_matrix(*A) || check_square_matrix(*A));
-  if (error == OK) error = check_numb_mtx(*A);
+  int error = check_matrix(*A);
+  if (error == OK) {
+    if (check_square_matrix(*A) != OK || check_numb_mtx(*A) != OK ||
+        result == NULL) {
+      error = ERROR_CALCULATION;
+    }
+  }
   if (error == OK) {
     if (A->rows == 1) {
       *result = A->matrix[0][0];
@@ -268,8 +273,8 @@ int check_matrix(matrix_t mtx) {
 
 int check_numb_mtx(matrix_t mtx) {
   int result = OK;
-  for (int i = 0; i < mtx.rows; i++)
-    for (int j = 0; j < mtx.columns; j++)
+  for (int i = 0; i < mtx.rows && result == OK; i++)
+    for (int j = 0; j < mtx.columns && result == OK; j++)
       if (isinf(mtx.matrix[i][j]) || isnan(mtx.matrix[i][j]))
         result = ERROR_CALCULATION;
   return result;
@@ -279,12 +284,6 @@ int check_eq_size_matrix(matrix_t value_1, matrix_t value_2) {
   int result = OK;
   if (value_1.rows != value_2.rows || value_1.columns != value_2.columns)
     result = ERROR_CALCULATION;
-  return result;
-}
-
-int check_mult_size_matrix(matrix_t value_1, matrix_t value_2) {
-  int result = OK;
-  if (value_1.columns != value_2.rows) result = ERROR_CALCULATION;
   return result;
 }
 

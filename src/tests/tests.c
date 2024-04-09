@@ -30,13 +30,13 @@ void run_testcase(Suite* testcase) {
 }
 
 int main(void) {
-  run_testcase(suite_eq_matrix());      // OK
-  run_testcase(suite_create_matrix());  // OK
-  run_testcase(suite_remove_matrix());  // OK
-  run_testcase(suite_sum_matrix());     // OK
-  run_testcase(suite_sub_matrix());
-  run_testcase(suite_mult_number_matrix());
-  run_testcase(suite_mult_matrix());
+  run_testcase(suite_eq_matrix());           // OK
+  run_testcase(suite_create_matrix());       // OK
+  run_testcase(suite_remove_matrix());       // OK
+  run_testcase(suite_sum_matrix());          // OK
+  run_testcase(suite_sub_matrix());          // OK
+  run_testcase(suite_mult_number_matrix());  // OK
+  run_testcase(suite_mult_matrix());         // OK
   run_testcase(suite_transpose_matrix());
   run_testcase(suite_calc_comp_matrix());
   run_testcase(suite_determinant_matrix());
