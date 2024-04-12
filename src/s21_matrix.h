@@ -2,7 +2,6 @@
 #define S21_MATRIX_H_
 
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #define EPS 1e-7
@@ -196,5 +195,7 @@ int check_square_matrix(matrix_t value);
  * @param *minor матрица миноров из А по row и column
  */
 void get_minor(int row, int column, matrix_t A, matrix_t *minor);
+
+void fill_matrix(matrix_t *A, double start_value, double delta);
 
 #endif  // S21_MATRIX_H_
