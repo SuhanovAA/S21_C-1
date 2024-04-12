@@ -1,53 +1,72 @@
 #include "tests.h"
 
 START_TEST(eq_matrix_test_0) {
-  matrix_t A, B;
-  s21_create_matrix(3, 2, &A), s21_create_matrix(3, 2, &B);
-  fill_matrix(&A, 2, 3.55), fill_matrix(&B, 2, 3.55);
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
+  s21_create_matrix(5, 5, &B);
+  fill_matrix(&A, 21, 21);
+  fill_matrix(&B, 21, 21);
   ck_assert_int_eq(s21_eq_matrix(&A, &B), SUCCESS);
-  s21_remove_matrix(&A), s21_remove_matrix(&B);
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
 START_TEST(eq_matrix_test_1) {
-  matrix_t A, B;
-  s21_create_matrix(3, 2, &A), s21_create_matrix(3, 2, &B);
-  fill_matrix(&A, -3.12123, 2.854), fill_matrix(&B, 0, 8.888);
-  ck_assert_int_eq(s21_eq_matrix(&A, &B), FAILURE);
-  s21_remove_matrix(&A), s21_remove_matrix(&B);
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
+  s21_create_matrix(5, 5, &B);
+  ck_assert_int_eq(s21_eq_matrix(&A, &B), SUCCESS);
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
 START_TEST(eq_matrix_test_2) {
-  matrix_t A, B;
-  s21_create_matrix(3, 2, &A), s21_create_matrix(1, 1, &B);
-  fill_matrix(&A, -3.12123, 2.854), fill_matrix(&B, 0, 8.888);
-  ck_assert_int_eq(s21_eq_matrix(&A, &B), FAILURE);
-  s21_remove_matrix(&A), s21_remove_matrix(&B);
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
+  s21_create_matrix(5, 5, &B);
+  fill_matrix(&A, 1, 0.000000001);
+  fill_matrix(&B, 1, 0.000000002);
+  ck_assert_int_eq(s21_eq_matrix(&A, &B), SUCCESS);
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
 START_TEST(eq_matrix_test_3) {
-  matrix_t A, B;
-  s21_create_matrix(1, 1, &A), s21_create_matrix(1, 1, &B);
-  A.matrix[0][0] = 1e2;
-  B.matrix[0][0] = 1e2;
-  ck_assert_int_eq(s21_eq_matrix(&A, &B), SUCCESS);
-  s21_remove_matrix(&A), s21_remove_matrix(&B);
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
+  s21_create_matrix(3, 4, &B);
+  ck_assert_int_eq(s21_eq_matrix(&A, &B), FAILURE);
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
 START_TEST(eq_matrix_test_4) {
-  matrix_t A, B;
-  s21_create_matrix(1, 2, &A), s21_create_matrix(1, 1, &B);
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
   ck_assert_int_eq(s21_eq_matrix(&A, &B), FAILURE);
-  s21_remove_matrix(&A), s21_remove_matrix(&B);
+  s21_remove_matrix(&A);
 }
 END_TEST
 
 START_TEST(eq_matrix_test_5) {
-  matrix_t A, B;
+  matrix_t A = {};
+  matrix_t B = {};
+  s21_create_matrix(5, 5, &A);
+  s21_create_matrix(5, 5, &B);
+  fill_matrix(&A, 21, 1);
+  fill_matrix(&B, 42, 1);
   ck_assert_int_eq(s21_eq_matrix(&A, &B), FAILURE);
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
