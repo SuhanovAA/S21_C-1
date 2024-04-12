@@ -2,27 +2,30 @@
 
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
   int error = OK;
-  if (!result || rows <= 0 || columns <= 0) {
+  if (result == NULL || rows <= 0 || columns <= 0) {
     error = ERROR_INCORRECT;
   } else {
-    result->columns = columns;
-    result->rows = rows;
-    result->matrix = (double **)malloc(rows * sizeof(double *));
-    if (!result->matrix) {
+    double **matrix = (double **)calloc(rows, sizeof(double *));
+    if (!matrix) {
       error = ERROR_CALCULATION;
     } else {
-      int tmp = 0;  // border matrix
-      for (int i = 0; i < rows && error == OK; i++, tmp++) {
-        result->matrix[i] = (double *)malloc(columns * sizeof(double));
-        if (!result->matrix[i]) {
+      int ptr = 0;
+      for (; ptr < rows; ptr++) {
+        matrix[ptr] = (double *)calloc(columns, sizeof(double));
+        if (!matrix[ptr]) {
           error = ERROR_CALCULATION;
-        }
+          break;
+        };
       }
-      if (error != OK) {
-        for (int i = 0; i < tmp; i++) {
-          free(result->matrix[i]);
+      if (error == OK) {
+        result->matrix = matrix;
+        result->columns = columns;
+        result->rows = rows;
+      } else {
+        for (int i = 0; i < ptr; i++) {
+          free(matrix[i]);
         }
-        free(result->matrix);
+        free(matrix);
       }
     }
   }
