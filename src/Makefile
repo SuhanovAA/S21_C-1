@@ -14,7 +14,7 @@ ifeq ($(OS), Darwin)
 	TESTFLAGS=-pthread -lm -lcheck 
 	OPEN_CMD=open
 else
-	TESTFLAGS=-pthread -lcheck_pic -lrt -lm -lsubunit
+	TESTFLAGS=-lcheck -lsubunit -lpthread -lrt -lm 
 	OPEN_CMD=xdg-open
 endif
 
@@ -34,7 +34,7 @@ test: clang $(FILE).a
 gcov_report: $(FILE).a
 	$(CC) $(COVFLAG) $(FILETEST).c *.c -o $(FILEREPORT) $(TESTFLAGS)
 	./$(FILEREPORT)
-	lcov -t "$(FILE)" -o test.info -c -d .  --no-external
+	lcov -t "$(FILE)" -o test.info -c -d .
 	genhtml -o $(DIRREPORT) test.info
 	$(OPEN_CMD) $(DIRREPORT)/index.html 
 
@@ -62,8 +62,13 @@ clang_s21:
 
 check: cpp clang
 
-leaks: test
-	leaks -atExit -- ./s21_test
+leaks: clang $(FILE).a
+	$(CC) $(FILETEST).c $(FILE).a -o $(FILETESTO) $(TESTFLAGS)
+	leaks -atExit -- ./$(FILETESTO)
+
+valgrind: clang $(FILE).a
+	$(CC) $(FILETEST).c $(FILE).a -o $(FILETESTO) $(TESTFLAGS)
+	valgrind --tool=memcheck --leak-check=yes ./$(FILETESTO)
 
 #install for OS
 install_macOS:

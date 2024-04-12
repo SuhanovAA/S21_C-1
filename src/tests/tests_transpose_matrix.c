@@ -1,12 +1,11 @@
 #include "tests.h"
 
 START_TEST(transpose_matrix_test_0) {
-  matrix_t A, result;
+  matrix_t A = {}, result = {};
   s21_create_matrix(0, 6, &A);
   fill_matrix(&A, 0, 1);
 
   ck_assert_int_eq(s21_transpose(&A, &result), ERROR_INCORRECT);
-  s21_remove_matrix(&A);
 }
 END_TEST
 

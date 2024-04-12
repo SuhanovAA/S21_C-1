@@ -45,10 +45,11 @@ void s21_remove_matrix(matrix_t *A) {
 
 int s21_eq_matrix(matrix_t *A, matrix_t *B) {
   int error = SUCCESS;
-  if (check_matrix(*A) || check_matrix(*B) || check_eq_size_matrix(*A, *B)) {
+  if (check_matrix(*A) == ERROR_INCORRECT ||
+      check_matrix(*B) == ERROR_INCORRECT ||
+      check_eq_size_matrix(*A, *B) == ERROR_CALCULATION) {
     error = FAILURE;
-  }
-  if (error == SUCCESS) {
+  } else {
     for (int i = 0; i < A->rows && error == SUCCESS; i++) {
       for (int j = 0; j < A->columns && error == SUCCESS; j++) {
         if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPS) {

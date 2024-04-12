@@ -27,14 +27,12 @@ END_TEST
 START_TEST(create_matrix_test_4) {
   matrix_t A;
   ck_assert_int_eq(s21_create_matrix(-3, 3, &A), ERROR_INCORRECT);
-  s21_remove_matrix(&A);
 }
 END_TEST
 
 START_TEST(create_matrix_test_5) {
   matrix_t A;
   ck_assert_int_eq(s21_create_matrix(0, 0, &A), ERROR_INCORRECT);
-  s21_remove_matrix(&A);
 }
 END_TEST
 

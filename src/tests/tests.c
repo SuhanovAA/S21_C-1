@@ -1,10 +1,22 @@
 #include "tests.h"
 
-void fill_matrix(matrix_t* dst, double min, double max) {
-  double num = (min + max) / 2;
-  for (int i = 0; i < dst->rows; i++)
-    for (int j = 0; j < dst->columns; j++)
-      dst->matrix[i][j] = num * (double)(i + j);
+// void fill_matrix(matrix_t* dst, double min, double max) {
+//   double num = (min + max) / 2;
+//   for (int i = 0; i < dst->rows; i++)
+//     for (int j = 0; j < dst->columns; j++)
+//       dst->matrix[i][j] = num * (double)(i + j);
+// }
+
+void fill_matrix(matrix_t* A, double start_value, double delta) {
+  if (A != NULL && A->matrix != NULL) {
+    double value = start_value;
+    for (int i = 0; i < A->rows; i++) {
+      for (int j = 0; j < A->columns; j++) {
+        A->matrix[i][j] = value;
+        value += delta;
+      }
+    }
+  }
 }
 
 void s21_initialize_matrix(matrix_t* A, double start_value, double delta) {

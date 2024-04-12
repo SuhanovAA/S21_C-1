@@ -25,7 +25,9 @@ Suite* suite_inverse_matrix(void);
  * @param min минимальная граница для формулы
  * @param max максимальная граница для формулы
  */
-void fill_matrix(matrix_t* dst, double min, double max);
+// void fill_matrix(matrix_t* dst, double min, double max);
+
+void fill_matrix(matrix_t* A, double start_value, double delta);
 void s21_initialize_matrix(matrix_t* A, double start_value, double delta);
 void run_testcase(Suite* testcase);
 
