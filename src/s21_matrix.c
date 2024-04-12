@@ -199,6 +199,43 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
 
   return error;
 }
+
+/*
+Test number: 7, name: determinant
+
+Test output:
+Functional test output: True
+Memory test output:
+==167== Memcheck, a memory error detector
+==167== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==167== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==167== Command: /builds/pipelines/test/to/tests/unit-tests/unit_test determinant
+==167== 
+==167== Conditional jump or move depends on uninitialised value(s)
+==167==    at 0x10E3BE: test_determinant (in /builds/pipelines/test/to/tests/unit-tests/unit_test)
+==167==    by 0x1100C0: main (in /builds/pipelines/test/to/tests/unit-tests/unit_test)
+==167== 
+==167== Conditional jump or move depends on uninitialised value(s)
+==167==    at 0x10E792: test_determinant (in /builds/pipelines/test/to/tests/unit-tests/unit_test)
+==167==    by 0x1100C0: main (in /builds/pipelines/test/to/tests/unit-tests/unit_test)
+==167== 
+==167== 
+==167== HEAP SUMMARY:
+==167==     in use at exit: 0 bytes in 0 blocks
+==167==   total heap usage: 61 allocs, 61 frees, 1,104 bytes allocated
+==167== 
+==167== All heap blocks were freed -- no leaks are possible
+==167== 
+==167== Use --track-origins=yes to see where uninitialised values come from
+==167== For lists of detected and suppressed errors, rerun with: -s
+==167== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+
+Test result for the function s21_determinant: OK
+
+Memory test: FAIL 
+0
+Test result: 0
+*/
 int s21_determinant(matrix_t *A, double *result) {
   int error = check_matrix(*A);
   if (error == OK) {
